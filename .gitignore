@@ -30,11 +30,7 @@ local.properties
 *.iml
 
 # Maven
-
 target/
-
-## Project specific
-deploy
 
 # Default by github for Java projects
 

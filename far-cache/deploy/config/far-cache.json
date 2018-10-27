@@ -1,0 +1,8 @@
+{
+	"address" : "192.168.3.100",
+	"port" : "5701",
+	"cluster" : {
+		"member-addresses" : ["192.168.3.100:5701"],
+		"connection-timeout" : "20"
+	}
+}
