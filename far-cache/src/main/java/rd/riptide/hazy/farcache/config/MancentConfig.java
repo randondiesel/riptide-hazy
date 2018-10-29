@@ -14,11 +14,8 @@
 
 package rd.riptide.hazy.farcache.config;
 
-import java.util.List;
-
 import com.hazelcast.config.Config;
-import com.hazelcast.config.NetworkConfig;
-import com.hazelcast.config.TcpIpConfig;
+import com.hazelcast.config.ManagementCenterConfig;
 
 import rd.jsonmapper.JSON;
 
@@ -27,24 +24,24 @@ import rd.jsonmapper.JSON;
  *
  */
 
-public class Cluster {
+public class MancentConfig {
 
-	@JSON("member-addresses")
-	private List<String> members;
+	@JSON("url")
+	private String url;
 
-	@JSON("connection-timeout")
-	private int timeout;
+	@JSON("update-interval")
+	private int updateInterval;
 
 	public final void populate(Config cfg) {
-		NetworkConfig netcfg = cfg.getNetworkConfig();
-		netcfg.getJoin().getMulticastConfig().setEnabled(false);
-		if(members != null && !members.isEmpty()) {
-			TcpIpConfig tcpcfg = netcfg.getJoin().getTcpIpConfig();
-			tcpcfg.setEnabled(true);
-			for(String maddr : members) {
-				tcpcfg.addMember(maddr);
-			}
-			tcpcfg.setConnectionTimeoutSeconds(timeout);
+		ManagementCenterConfig mccfg = cfg.getManagementCenterConfig();
+		if(url == null && url.trim().length() == 0) {
+			return;
 		}
+		if(updateInterval <= 0) {
+			return;
+		}
+		mccfg.setEnabled(true);
+		mccfg.setUpdateInterval(updateInterval);
+		mccfg.setUrl(url.trim());
 	}
 }

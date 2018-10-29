@@ -33,10 +33,17 @@ public class HazyConfig {
 	private int port;
 
 	@JSON("management-center")
-	private ManagementCenter mgmtctr;
+	private MancentConfig mgmtctr;
 
 	@JSON("cluster")
-	private Cluster cluster;
+	private ClusterConfig cluster;
+
+	@JSON("session")
+	private SessionConfig session;
+
+	public HazyConfig() {
+		session = new SessionConfig();
+	}
 
 	public final Config createHazelcastConfig() {
 		Config cfg = new Config();
@@ -57,5 +64,9 @@ public class HazyConfig {
 			cluster.populate(cfg);
 		}
 		return cfg;
+	}
+
+	public final SessionConfig sessionConfig() {
+		return session;
 	}
 }
