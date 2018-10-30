@@ -14,7 +14,12 @@
 
 package rd.riptide.hazy.capability;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
+
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
+import com.hazelcast.core.MultiMap;
 
 import rd.riptide.ext.SessionProvider;
 
@@ -23,30 +28,34 @@ import rd.riptide.ext.SessionProvider;
  *
  */
 
-public class HazySessionProvider implements SessionProvider {
+public abstract class HazySessionProvider implements SessionProvider {
 
-	private HazyConfig hcfg;
+	protected HazelcastInstance hzi;
+	protected ServletContext    ctxt;
 
-	HazySessionProvider(HazyConfig hc) {
-		hcfg = hc;
+	private IMap<String, SessionData> sessions;
+	private MultiMap<String, String>   sessionKeys;
+	private IMap<String, Object>       sessionValues;
+
+	protected HazySessionProvider() {
+		//NOOP
 	}
 
 	@Override
 	public void initialize() {
-		// TODO Auto-generated method stub
-
+		sessions = hzi.getMap("hazy-session");
+		sessionKeys = hzi.getMultiMap("hazy-session-keys");
+		sessionValues = hzi.getMap("hazy-session-values");
 	}
 
 	@Override
 	public HttpSession getSession() {
-		// TODO Auto-generated method stub
-		return null;
+		return HazySession.createNew(sessions, sessionKeys, sessionValues, ctxt);
 	}
 
 	@Override
 	public HttpSession getSession(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return HazySession.getExisting(id, sessions, sessionKeys, sessionValues, ctxt);
 	}
 
 	@Override

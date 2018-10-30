@@ -14,11 +14,18 @@
 
 package rd.riptide.hazy.capability;
 
+import javax.servlet.ServletContext;
+
+import rd.riptide.hazy.capability.config.HazyConfig;
+
 /**
- * @author randondiesel
+ * @author indroneel
  *
  */
 
-public class HazyConfig {
+public class Peer2PeerProvider extends HazySessionProvider {
 
+	public Peer2PeerProvider(HazyConfig cfg, ServletContext ctxt) {
+		super();
+	}
 }

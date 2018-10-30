@@ -16,6 +16,7 @@ package rd.riptide.hazy.capability;
 
 import rd.riptide.ext.Capability;
 import rd.riptide.ext.Environment;
+import rd.riptide.hazy.capability.config.HazyConfig;
 
 /**
  * @author randondiesel
@@ -32,7 +33,12 @@ public class HazyCapability implements Capability {
 	@Override
 	public void initialize(Environment env) {
 		HazyConfig hcfg = env.getConfig("hazy", HazyConfig.class);
-		hsp = new HazySessionProvider(hcfg);
+		if(hcfg.clientServerConfig() != null) {
+			hsp = new ClientServerProvider(hcfg, env.getServletContext());
+		}
+		else if(hcfg.peer2PeerConfig() != null) {
+			hsp = new Peer2PeerProvider(hcfg, env.getServletContext());
+		}
 		env.setSessionProvider(hsp);
 	}
 
