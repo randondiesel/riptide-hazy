@@ -3,4 +3,7 @@
 	<logger name="rd.riptide.hazy.farcache" level="TRACE" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
+	<logger name="com.hazelcast" level="DEBUG" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
 </included>

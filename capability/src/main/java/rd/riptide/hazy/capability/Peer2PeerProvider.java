@@ -25,7 +25,10 @@ import rd.riptide.hazy.capability.config.HazyConfig;
 
 public class Peer2PeerProvider extends HazySessionProvider {
 
+	private HazyConfig hazyCfg;
+
 	public Peer2PeerProvider(HazyConfig cfg, ServletContext ctxt) {
-		super();
+		hazyCfg = cfg;
+		super.ctxt = ctxt;
 	}
 }

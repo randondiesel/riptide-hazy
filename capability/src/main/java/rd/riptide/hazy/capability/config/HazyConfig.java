@@ -29,18 +29,11 @@ public class HazyConfig {
 	@JSON("client-server")
 	private ClientServerConfig csCfg;
 
-	@JSON("session")
-	private SessionConfig sesCfg;
-
 	public final Peer2PeerConfig peer2PeerConfig() {
 		return p2pCfg;
 	}
 
 	public final ClientServerConfig clientServerConfig() {
 		return csCfg;
-	}
-
-	public final SessionConfig sessionConfig() {
-		return sesCfg;
 	}
 }

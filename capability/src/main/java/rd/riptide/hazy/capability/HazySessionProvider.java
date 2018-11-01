@@ -34,8 +34,8 @@ public abstract class HazySessionProvider implements SessionProvider {
 	protected ServletContext    ctxt;
 
 	private IMap<String, SessionData> sessions;
-	private MultiMap<String, String>   sessionKeys;
-	private IMap<String, Object>       sessionValues;
+	private MultiMap<String, String>  sessionKeys;
+	private IMap<String, Object>      sessionValues;
 
 	protected HazySessionProvider() {
 		//NOOP

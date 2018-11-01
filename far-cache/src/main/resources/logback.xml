@@ -17,7 +17,14 @@
 		<appender-ref ref="STDOUT" />
 	</root>
 
-	<include file="config/logback.xml"/>
+	<if condition='isDefined("devmode")'>
+		<then>
+			<include file="deploy/config/logback.xml"/>
+		</then>
+		<else>
+			<include file="config/logback.xml"/>
+		</else>
+	</if>
 
 	<!--
 	<logger name="rd.riptide.hazy" level="TRACE" additivity="false">
