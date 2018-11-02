@@ -35,6 +35,7 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
+import com.hazelcast.map.impl.MapListenerAdapter;
 
 import rd.jsonmapper.decode.Json2Object;
 import rd.riptide.hazy.farcache.config.HazyConfig;
@@ -113,20 +114,25 @@ public class Main {
 		Config cfg = hazyCfg.createHazelcastConfig();
 		cfg.setInstanceName("hazy");
 
+		int bacnt = hazyCfg.sessionConfig().getBackupCount();
+		LOGGER.info(String.format("hazy backup count %d", bacnt));
+		int ttl = hazyCfg.sessionConfig().getTimeToLive();
+		LOGGER.info(String.format("hazy-sessions TTL in seconds %d", ttl));
+
 		MapConfig mcfg = new MapConfig("hazy-sessions");
-		mcfg.setBackupCount(hazyCfg.sessionConfig().getBackupCount());
-		mcfg.setMaxIdleSeconds(hazyCfg.sessionConfig().getMaxIdleTime());
+		mcfg.setBackupCount(bacnt);
+		mcfg.setTimeToLiveSeconds(ttl);
 		mcfg.addEntryListenerConfig(
 				new EntryListenerConfig(new SessionTimeoutHandler(), false, false));
 		cfg.addMapConfig(mcfg);
 
 		MultiMapConfig mmcfg = new MultiMapConfig("hazy-session-keys");
-		mmcfg.setBackupCount(hazyCfg.sessionConfig().getBackupCount());
+		mmcfg.setBackupCount(bacnt);
 		mmcfg.setValueCollectionType(ValueCollectionType.SET);
 		cfg.addMultiMapConfig(mmcfg);
 
 		MapConfig mvcfg = new MapConfig("hazy-session-values");
-		mvcfg.setBackupCount(hazyCfg.sessionConfig().getBackupCount());
+		mvcfg.setBackupCount(bacnt);
 		cfg.addMapConfig(mvcfg);
 
 		hinst = Hazelcast.newHazelcastInstance(cfg);
@@ -141,15 +147,29 @@ public class Main {
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// Session timeout handler
 
-	private class SessionTimeoutHandler extends EntryAdapter<String, Object> {
+	private class SessionTimeoutHandler extends MapListenerAdapter<String, Object> {
+
+		@Override
+		public void entryExpired(EntryEvent<String, Object> event) {
+			if(LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine(String.format("session expired: %s", event.getKey()));
+			}
+			removeSession(event.getKey());
+		}
 
 		@Override
 		public void entryEvicted(EntryEvent<String, Object> event) {
+			if(LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine(String.format("session evicted: %s", event.getKey()));
+			}
 			removeSession(event.getKey());
 		}
 
 		@Override
 		public void entryRemoved(EntryEvent<String, Object> event) {
+			if(LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine(String.format("session removed: %s", event.getKey()));
+			}
 			removeSession(event.getKey());
 		}
 

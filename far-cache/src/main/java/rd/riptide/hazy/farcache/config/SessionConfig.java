@@ -26,19 +26,19 @@ public class SessionConfig {
 	@JSON("backup-count")
 	private int backupCount;
 
-	@JSON("max-idle-time")
-	private int maxIdleTime;
+	@JSON("time-to-live")
+	private int timeToLive;
 
 	public SessionConfig() {
 		backupCount = 3;
-		maxIdleTime = 300;
+		timeToLive = 300;
 	}
 
 	public int getBackupCount() {
 		return backupCount;
 	}
 
-	public int getMaxIdleTime() {
-		return maxIdleTime;
+	public int getTimeToLive() {
+		return timeToLive;
 	}
 }
