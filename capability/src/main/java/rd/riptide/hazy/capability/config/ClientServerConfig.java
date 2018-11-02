@@ -41,6 +41,11 @@ public class ClientServerConfig {
 	@JSON("connection-attempt-limit")
 	private int connAtmptLmt;
 
+	public ClientServerConfig() {
+		timeout = 30000;
+		connAtmptPrd = 5000;
+	}
+
 	public final void populate(ClientConfig cfg) {
 		ClientNetworkConfig nwcfg = cfg.getNetworkConfig();
 		if(members != null) {

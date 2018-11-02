@@ -43,7 +43,7 @@ public abstract class HazySessionProvider implements SessionProvider {
 
 	@Override
 	public void initialize() {
-		sessions = hzi.getMap("hazy-session");
+		sessions = hzi.getMap("hazy-sessions");
 		sessionKeys = hzi.getMultiMap("hazy-session-keys");
 		sessionValues = hzi.getMap("hazy-session-values");
 	}
