@@ -32,13 +32,9 @@ import rd.jsonmapper.JSON;
  *
  */
 
-public class Peer2PeerConfig {
+public class Peer2PeerConfig implements HazyConstants {
 
 	private static Logger LOGGER = Logger.getLogger(Peer2PeerConfig.class.getName());
-
-	public static final String MNAME_SESSIONS       = "hazy-sessions";
-	public static final String MNAME_SESSION_KEYS   = "hazy-session-keys";
-	public static final String MNAME_SESSION_VALUES = "hazy-session-values";
 
 	@JSON("address")
 	private String address;

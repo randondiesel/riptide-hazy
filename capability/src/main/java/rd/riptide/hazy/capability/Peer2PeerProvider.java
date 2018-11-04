@@ -28,7 +28,6 @@ import com.hazelcast.core.MultiMap;
 import com.hazelcast.map.impl.MapListenerAdapter;
 
 import rd.riptide.hazy.capability.config.HazyConfig;
-import rd.riptide.hazy.capability.config.Peer2PeerConfig;
 
 /**
  * @author indroneel
@@ -86,9 +85,9 @@ public class Peer2PeerProvider extends SessionProviderBase {
 		}
 
 		private void removeSession(String sessionId) {
-			MultiMap<Object, String> skMap = hzi.getMultiMap(Peer2PeerConfig.MNAME_SESSION_KEYS);
+			MultiMap<Object, String> skMap = hzi.getMultiMap(MNAME_SESSION_KEYS);
 			Collection<String> keyNames = skMap.remove(sessionId);
-			IMap<String, Object> svMap = hzi.getMap(Peer2PeerConfig.MNAME_SESSION_VALUES);
+			IMap<String, Object> svMap = hzi.getMap(MNAME_SESSION_VALUES);
 			for(String key : keyNames) {
 				svMap.remove(sessionId + ":" + key);
 			}
