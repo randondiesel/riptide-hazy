@@ -17,11 +17,13 @@ package rd.riptide.hazy.capability;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 
+import com.hazelcast.core.EntryView;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
 
@@ -30,7 +32,95 @@ import com.hazelcast.core.MultiMap;
  *
  */
 
+@SuppressWarnings("deprecation")
 public class HazySession implements HttpSession {
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// This is the builder class that is used to create an instance of HazySession. The builder is
+	// stateful, with each instance should be used to create exactly one session instancem, ever.
+
+	public static class Builder {
+
+		private HazySession hzs;
+
+		public Builder sessionsMap(IMap<String, SessionData> smap) {
+			hzs.sessions = smap;
+			return this;
+		}
+
+		public Builder sessionKeysMap(MultiMap<String, String> skmap) {
+			hzs.sessionKeys = skmap;
+			return this;
+		}
+
+		public Builder sessionValuesMap(IMap<String, Object> svmap) {
+			hzs.sessionValues = svmap;
+			return this;
+		}
+
+		public Builder servletContext(ServletContext ctxt) {
+			hzs.ctxt = ctxt;
+			return this;
+		}
+
+		public HazySession createNew() {
+			UUID uuid = UUID.randomUUID();
+			StringBuilder sb = new StringBuilder();
+			sb.append(Long.toString(uuid.getMostSignificantBits(), 36))
+				.append('-')
+				.append(Long.toString(uuid.getMostSignificantBits(), 36));
+			String sessionId = sb.toString().toLowerCase();
+
+			if(hzs.sessions.containsKey(sessionId)) {
+				// if a session already exists with the given id, do not create a new one.
+				return null;
+			}
+
+			SessionData sd = new SessionData();
+			sd.setCreationTime(System.currentTimeMillis());
+			sd.setLastAccessTime(Long.MIN_VALUE);
+			hzs.sessions.put(sessionId, sd);
+
+			hzs.sessionId = sessionId;
+			hzs.sessionData = sd;
+			hzs.newFlag = true;
+			return hzs;
+		}
+
+		public HazySession getExisting(String sessionId) {
+
+			if(!hzs.sessions.containsKey(sessionId)) {
+				// a session must exist already with the given id, else return null.
+				return null;
+			}
+
+			SessionData sd = hzs.sessions.get(sessionId);
+			sd.setLastAccessTime(System.currentTimeMillis());
+			hzs.sessions.put(sessionId, sd);
+
+			hzs.sessionId = sessionId;
+			hzs.sessionData = sd;
+			return hzs;
+		}
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// This is a blank implementation of HttpSessionContext for backward compatibility
+
+	private static class SessionContextImpl implements HttpSessionContext {
+
+		@Override
+		public HttpSession getSession(String sessionId) {
+			return null;
+		}
+
+		@Override
+		public Enumeration<String> getIds() {
+			return Collections.emptyEnumeration();
+		}
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private IMap<String, SessionData> sessions;
 	private MultiMap<String, String>  sessionKeys;
@@ -40,64 +130,7 @@ public class HazySession implements HttpSession {
 	private String      sessionId;
 	private SessionData sessionData;
 	private boolean     newFlag;
-
-	public static final HazySession createNew (
-			IMap<String, SessionData> sessions,
-			MultiMap<String, String> skeys,
-			IMap<String, Object> svals, ServletContext ctxt) {
-
-		UUID uuid = UUID.randomUUID();
-		StringBuilder sb = new StringBuilder();
-		sb.append(Long.toString(uuid.getMostSignificantBits(), 36))
-			.append('-')
-			.append(Long.toString(uuid.getMostSignificantBits(), 36));
-		String sessionId = sb.toString().toLowerCase();
-
-		if(sessions.containsKey(sessionId)) {
-			// if a session already exists with the given id, do not create a new one.
-			return null;
-		}
-
-		SessionData sd = new SessionData();
-		sd.setCreationTime(System.currentTimeMillis());
-		sd.setLastAccessTime(Long.MIN_VALUE);
-		sessions.put(sessionId, sd);
-
-		HazySession hs = new HazySession();
-
-		hs.sessionId = sessionId;
-		hs.sessions = sessions;
-		hs.sessionKeys = skeys;
-		hs.sessionValues = svals;
-		hs.ctxt = ctxt;
-		hs.sessionData = sd;
-		hs.newFlag = true;
-		return hs;
-	}
-
-	public static final HazySession getExisting(String sessionId,
-			IMap<String, SessionData> sessions,
-			MultiMap<String, String> skeys,
-			IMap<String, Object> svals, ServletContext ctxt) {
-
-		if(!sessions.containsKey(sessionId)) {
-			// a session must exist already with the given id, else return null.
-			return null;
-		}
-
-		SessionData sd = sessions.get(sessionId);
-		sd.setLastAccessTime(System.currentTimeMillis());
-		sessions.put(sessionId, sd);
-
-		HazySession hs = new HazySession();
-		hs.sessionId = sessionId;
-		hs.sessions = sessions;
-		hs.sessionKeys = skeys;
-		hs.sessionValues = svals;
-		hs.ctxt = ctxt;
-		hs.sessionData = sd;
-		return hs;
-	}
+	private boolean     invalid;
 
 	private HazySession() {
 		//NOOP
@@ -108,6 +141,9 @@ public class HazySession implements HttpSession {
 
 	@Override
 	public long getCreationTime() {
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
 		return sessionData.getCreationTime();
 	}
 
@@ -118,6 +154,9 @@ public class HazySession implements HttpSession {
 
 	@Override
 	public long getLastAccessedTime() {
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
 		return sessionData.getLastAccessTime();
 	}
 
@@ -126,86 +165,109 @@ public class HazySession implements HttpSession {
 		return ctxt;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpSession#setMaxInactiveInterval(int)
-	 */
 	@Override
 	public void setMaxInactiveInterval(int interval) {
-		// TODO Auto-generated method stub
-
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
+		SessionData sd = sessions.get(sessionId);
+		sessions.put(sessionId, sd, interval, TimeUnit.SECONDS);
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpSession#getMaxInactiveInterval()
-	 */
 	@Override
 	public int getMaxInactiveInterval() {
-		// TODO Auto-generated method stub
-		return 0;
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
+		EntryView<String, SessionData> ev = sessions.getEntryView(sessionId);
+		return (int) ev.getTtl();
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpSession#getSessionContext()
-	 */
 	@Override
 	public HttpSessionContext getSessionContext() {
-		// TODO Auto-generated method stub
-		return null;
+		return new SessionContextImpl();
 	}
 
 	@Override
 	public Object getAttribute(String name) {
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
 		return sessionValues.get(sessionId + ":" + name);
 	}
 
 	@Override
 	public Object getValue(String name) {
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
 		return getAttribute(name);
 	}
 
 	@Override
 	public Enumeration<String> getAttributeNames() {
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
 		return Collections.enumeration(sessionKeys.get(sessionId));
 	}
 
 	@Override
 	public String[] getValueNames() {
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
 		return sessionKeys.get(sessionId).toArray(new String[0]);
 	}
 
 	@Override
 	public void setAttribute(String name, Object value) {
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
 		sessionValues.put(sessionId + ":" + name, value);
 		sessionKeys.put(sessionId, name);
 	}
 
 	@Override
 	public void putValue(String name, Object value) {
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
 		setAttribute(name, value);
 	}
 
 	@Override
 	public void removeAttribute(String name) {
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
 		sessionKeys.remove(sessionId, name);
 		sessionValues.remove(sessionId + ":" + name);
 	}
 
 	@Override
 	public void removeValue(String name) {
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
 		removeAttribute(name);
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpSession#invalidate()
-	 */
 	@Override
 	public void invalidate() {
-		// TODO Auto-generated method stub
-
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
+		sessions.remove(sessionId);
+		invalid = true;
 	}
 
 	@Override
 	public boolean isNew() {
+		if(invalid) {
+			throw new IllegalStateException("session has been invalidated");
+		}
 		return newFlag;
 	}
 }

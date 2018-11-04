@@ -27,7 +27,7 @@ import rd.riptide.hazy.capability.config.HazyConfig;
  *
  */
 
-public class ClientServerProvider extends HazySessionProvider {
+public class ClientServerProvider extends SessionProviderBase {
 
 	private HazyConfig hazyCfg;
 

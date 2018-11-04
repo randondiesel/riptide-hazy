@@ -30,7 +30,7 @@ public class HazyCapability implements Capability {
 
 	private static final Logger LOGGER = Logger.getLogger(HazyCapability.class.getName());
 
-	private HazySessionProvider hsp;
+	private SessionProviderBase hsp;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// Methods of interface Capability

@@ -28,7 +28,7 @@ import rd.riptide.ext.SessionProvider;
  *
  */
 
-public abstract class HazySessionProvider implements SessionProvider {
+public abstract class SessionProviderBase implements SessionProvider {
 
 	protected HazelcastInstance hzi;
 	protected ServletContext    ctxt;
@@ -37,7 +37,7 @@ public abstract class HazySessionProvider implements SessionProvider {
 	private MultiMap<String, String>  sessionKeys;
 	private IMap<String, Object>      sessionValues;
 
-	protected HazySessionProvider() {
+	protected SessionProviderBase() {
 		//NOOP
 	}
 
@@ -50,12 +50,22 @@ public abstract class HazySessionProvider implements SessionProvider {
 
 	@Override
 	public HttpSession getSession() {
-		return HazySession.createNew(sessions, sessionKeys, sessionValues, ctxt);
+		return new HazySession.Builder()
+			.servletContext(ctxt)
+			.sessionsMap(sessions)
+			.sessionKeysMap(sessionKeys)
+			.sessionValuesMap(sessionValues)
+			.createNew();
 	}
 
 	@Override
 	public HttpSession getSession(String id) {
-		return HazySession.getExisting(id, sessions, sessionKeys, sessionValues, ctxt);
+		return new HazySession.Builder()
+				.servletContext(ctxt)
+				.sessionsMap(sessions)
+				.sessionKeysMap(sessionKeys)
+				.sessionValuesMap(sessionValues)
+				.getExisting(id);
 	}
 
 	@Override
