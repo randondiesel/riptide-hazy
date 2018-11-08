@@ -43,6 +43,10 @@ public class HazySession implements HttpSession {
 
 		private HazySession hzs;
 
+		public Builder() {
+			hzs = new HazySession();
+		}
+
 		public Builder sessionsMap(IMap<String, SessionData> smap) {
 			hzs.sessions = smap;
 			return this;

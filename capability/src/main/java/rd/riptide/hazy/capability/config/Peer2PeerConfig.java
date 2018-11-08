@@ -60,7 +60,7 @@ public class Peer2PeerConfig implements HazyConstants {
 	@JSON("session")
 	private SessionConfig sessionCfg;
 
-	private Peer2PeerConfig() {
+	public Peer2PeerConfig() {
 		mcastGrp = "224.225.226.227";
 		mcastPort = 54327;
 		mcastTimeout = 10;

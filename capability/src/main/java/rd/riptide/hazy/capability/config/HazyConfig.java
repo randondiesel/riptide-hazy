@@ -23,7 +23,7 @@ import rd.jsonmapper.JSON;
 
 public class HazyConfig {
 
-	@JSON("peer-2-peer")
+	@JSON("peer-to-peer")
 	private Peer2PeerConfig p2pCfg;
 
 	@JSON("client-server")
