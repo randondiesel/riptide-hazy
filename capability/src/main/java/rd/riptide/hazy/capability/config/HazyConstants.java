@@ -14,26 +14,14 @@
 
 package rd.riptide.hazy.capability.config;
 
-import rd.jsonmapper.JSON;
-
 /**
- * @author randondiesel
+ * @author indroneel
  *
  */
+public interface HazyConstants {
 
-public class HazyConfig {
+	String MNAME_SESSIONS = "hazy-sessions";
+	String MNAME_SESSION_KEYS = "hazy-session-keys";
+	String MNAME_SESSION_VALUES = "hazy-session-values";
 
-	@JSON("peer-to-peer")
-	private Peer2PeerConfig p2pCfg;
-
-	@JSON("client-server")
-	private ClientServerConfig csCfg;
-
-	public final Peer2PeerConfig peer2PeerConfig() {
-		return p2pCfg;
-	}
-
-	public final ClientServerConfig clientServerConfig() {
-		return csCfg;
-	}
 }

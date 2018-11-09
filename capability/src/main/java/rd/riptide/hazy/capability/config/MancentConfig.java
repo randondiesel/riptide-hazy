@@ -14,26 +14,34 @@
 
 package rd.riptide.hazy.capability.config;
 
+import com.hazelcast.config.Config;
+import com.hazelcast.config.ManagementCenterConfig;
+
 import rd.jsonmapper.JSON;
 
 /**
- * @author randondiesel
+ * @author indroneel
  *
  */
 
-public class HazyConfig {
+public class MancentConfig {
 
-	@JSON("peer-to-peer")
-	private Peer2PeerConfig p2pCfg;
+	@JSON("url")
+	private String url;
 
-	@JSON("client-server")
-	private ClientServerConfig csCfg;
+	@JSON("update-interval")
+	private int updateInterval;
 
-	public final Peer2PeerConfig peer2PeerConfig() {
-		return p2pCfg;
-	}
-
-	public final ClientServerConfig clientServerConfig() {
-		return csCfg;
+	public final void populate(Config cfg) {
+		ManagementCenterConfig mccfg = cfg.getManagementCenterConfig();
+		if(url == null && url.trim().length() == 0) {
+			return;
+		}
+		if(updateInterval <= 0) {
+			return;
+		}
+		mccfg.setEnabled(true);
+		mccfg.setUpdateInterval(updateInterval);
+		mccfg.setUrl(url.trim());
 	}
 }

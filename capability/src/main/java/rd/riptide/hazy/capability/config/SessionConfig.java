@@ -17,23 +17,28 @@ package rd.riptide.hazy.capability.config;
 import rd.jsonmapper.JSON;
 
 /**
- * @author randondiesel
+ * @author indroneel
  *
  */
 
-public class HazyConfig {
+public class SessionConfig {
 
-	@JSON("peer-to-peer")
-	private Peer2PeerConfig p2pCfg;
+	@JSON("backup-count")
+	private int backupCount;
 
-	@JSON("client-server")
-	private ClientServerConfig csCfg;
+	@JSON("time-to-live")
+	private int timeToLive;
 
-	public final Peer2PeerConfig peer2PeerConfig() {
-		return p2pCfg;
+	public SessionConfig() {
+		backupCount = 3;
+		timeToLive = 300;
 	}
 
-	public final ClientServerConfig clientServerConfig() {
-		return csCfg;
+	public int getBackupCount() {
+		return backupCount;
+	}
+
+	public int getTimeToLive() {
+		return timeToLive;
 	}
 }

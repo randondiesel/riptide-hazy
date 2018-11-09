@@ -25,11 +25,6 @@ import java.util.logging.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.hazelcast.config.Config;
-import com.hazelcast.config.EntryListenerConfig;
-import com.hazelcast.config.MapConfig;
-import com.hazelcast.config.MultiMapConfig;
-import com.hazelcast.config.MultiMapConfig.ValueCollectionType;
-import com.hazelcast.core.EntryAdapter;
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -111,30 +106,7 @@ public class Main {
 
 		HazyConfig hazyCfg = (HazyConfig) new Json2Object().convert(cfgFileData, HazyConfig.class);
 
-		Config cfg = hazyCfg.createHazelcastConfig();
-		cfg.setInstanceName("hazy");
-
-		int bacnt = hazyCfg.sessionConfig().getBackupCount();
-		LOGGER.info(String.format("hazy backup count %d", bacnt));
-		int ttl = hazyCfg.sessionConfig().getTimeToLive();
-		LOGGER.info(String.format("hazy-sessions TTL in seconds %d", ttl));
-
-		MapConfig mcfg = new MapConfig("hazy-sessions");
-		mcfg.setBackupCount(bacnt);
-		mcfg.setTimeToLiveSeconds(ttl);
-		mcfg.addEntryListenerConfig(
-				new EntryListenerConfig(new SessionTimeoutHandler(), false, false));
-		cfg.addMapConfig(mcfg);
-
-		MultiMapConfig mmcfg = new MultiMapConfig("hazy-session-keys");
-		mmcfg.setBackupCount(bacnt);
-		mmcfg.setValueCollectionType(ValueCollectionType.SET);
-		cfg.addMultiMapConfig(mmcfg);
-
-		MapConfig mvcfg = new MapConfig("hazy-session-values");
-		mvcfg.setBackupCount(bacnt);
-		cfg.addMapConfig(mvcfg);
-
+		Config cfg = hazyCfg.createHazelcastConfig(new SessionTimeoutHandler());
 		hinst = Hazelcast.newHazelcastInstance(cfg);
 	}
 
@@ -174,9 +146,9 @@ public class Main {
 		}
 
 		private void removeSession(String sessionId) {
-			MultiMap<Object, String> sessionKeys = hinst.getMultiMap("hazy-session-keys");
+			MultiMap<Object, String> sessionKeys = hinst.getMultiMap(HazyConfig.MNAME_SESSION_KEYS);
 			Collection<String> keyNames = sessionKeys.remove(sessionId);
-			IMap<String, Object> sessionValues = hinst.getMap("hazy-session-values");
+			IMap<String, Object> sessionValues = hinst.getMap(HazyConfig.MNAME_SESSION_VALUES);
 			for(String key : keyNames) {
 				sessionValues.remove(sessionId + ":" + key);
 			}
