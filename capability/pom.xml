@@ -8,7 +8,7 @@
 	</prerequisites>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>rd.riptide.hazy</groupId>
+	<groupId>rd.riptide</groupId>
 	<artifactId>rd.riptide.hazy.capability</artifactId>
 	<name>Riptide Hazy</name>
 	<version>0.1-SNAPSHOT</version>
