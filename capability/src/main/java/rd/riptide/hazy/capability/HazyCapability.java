@@ -45,7 +45,6 @@ public class HazyCapability implements Capability {
 			return;
 		}
 
-		System.out.println("\n\n getting there \n\n");
 		if(hcfg.clientServerConfig() != null) {
 			hsp = new ClientServerProvider(hcfg, env.getServletContext());
 		}
