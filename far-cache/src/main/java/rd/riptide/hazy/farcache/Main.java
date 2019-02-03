@@ -104,7 +104,7 @@ public class Main {
 			LOGGER.fine("setting up hazelcast server");
 		}
 
-		HazyConfig hazyCfg = (HazyConfig) new Json2Object().convert(cfgFileData, HazyConfig.class);
+		HazyConfig hazyCfg = (HazyConfig) new Json2Object(cfgFileData).convert(HazyConfig.class);
 
 		Config cfg = hazyCfg.createHazelcastConfig(new SessionTimeoutHandler());
 		hinst = Hazelcast.newHazelcastInstance(cfg);
