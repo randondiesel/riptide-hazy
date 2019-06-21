@@ -12,14 +12,14 @@
  * the License.
  */
 
-package rd.riptide.hazy.capability;
+package id.riptide.hazy.capability;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import rd.riptide.ext.Capability;
-import rd.riptide.ext.Environment;
-import rd.riptide.hazy.capability.config.HazyConfig;
+import id.riptide.hazy.capability.config.HazyConfig;
+import id.riptide.ext.Capability;
+import id.riptide.ext.Environment;
 
 /**
  * @author randondiesel

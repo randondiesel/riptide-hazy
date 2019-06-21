@@ -12,7 +12,7 @@
  * the License.
  */
 
-package rd.riptide.hazy.capability;
+package id.riptide.hazy.capability;
 
 import javax.servlet.ServletContext;
 
@@ -20,7 +20,7 @@ import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 
-import rd.riptide.hazy.capability.config.HazyConfig;
+import id.riptide.hazy.capability.config.HazyConfig;
 
 /**
  * @author indroneel

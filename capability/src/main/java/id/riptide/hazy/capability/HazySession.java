@@ -12,7 +12,7 @@
  * the License.
  */
 
-package rd.riptide.hazy.capability;
+package id.riptide.hazy.capability;
 
 import java.math.BigInteger;
 import java.util.Collections;

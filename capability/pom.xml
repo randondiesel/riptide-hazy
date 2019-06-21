@@ -8,27 +8,27 @@
 	</prerequisites>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>rd.riptide</groupId>
-	<artifactId>rd.riptide.hazy.capability</artifactId>
+	<groupId>id.riptide</groupId>
+	<artifactId>id.riptide.hazy.capability</artifactId>
 	<name>Riptide Hazy</name>
 	<version>0.1-SNAPSHOT</version>
 	<description>A distributed session provider for Riptide using Hzaelcast</description>
 	<packaging>jar</packaging>
 
 	<scm>
-		<url>https://github.com/randondiesel/riptide-hazy.git</url>
-		<connection>scm:git:https://github.com/randondiesel/riptide-hazy.git</connection>
+		<url>https://github.com/indroneel/riptide-hazy.git</url>
+		<connection>scm:git:https://github.com/indroneel/riptide-hazy.git</connection>
 	</scm>
 
 	<dependencies>
 		<dependency>
-			<groupId>rd.jsonmapper</groupId>
-			<artifactId>rd.jsonmapper</artifactId>
+			<groupId>id.jsonmapper</groupId>
+			<artifactId>id.jsonmapper</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>rd.riptide</groupId>
-			<artifactId>rd.riptide.ext</artifactId>
+			<groupId>id.riptide</groupId>
+			<artifactId>id.riptide.ext</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -45,8 +45,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<release>8</release>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -88,11 +87,11 @@
 
 	<distributionManagement>
 		<repository>
-			<id>randondiesel-release</id>
+			<id>selfhosted-release</id>
 			<url>${deploy.release.url}</url>
 		</repository>
 		<snapshotRepository>
-			<id>randondiesel-snapshot</id>
+			<id>selfhosted-snapshot</id>
 			<url>${deploy.snapshot.url}</url>
 		</snapshotRepository>
 	</distributionManagement>

@@ -12,7 +12,7 @@
  * the License.
  */
 
-package rd.riptide.hazy.capability;
+package id.riptide.hazy.capability;
 
 import java.util.Collection;
 import java.util.logging.Level;
@@ -27,7 +27,7 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
 import com.hazelcast.map.impl.MapListenerAdapter;
 
-import rd.riptide.hazy.capability.config.HazyConfig;
+import id.riptide.hazy.capability.config.HazyConfig;
 
 /**
  * @author indroneel

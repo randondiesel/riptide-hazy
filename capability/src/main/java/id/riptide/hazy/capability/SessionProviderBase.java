@@ -12,7 +12,7 @@
  * the License.
  */
 
-package rd.riptide.hazy.capability;
+package id.riptide.hazy.capability;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -21,8 +21,8 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
 
-import rd.riptide.ext.SessionProvider;
-import rd.riptide.hazy.capability.config.HazyConstants;
+import id.riptide.ext.SessionProvider;
+import id.riptide.hazy.capability.config.HazyConstants;
 
 /**
  * @author indroneel

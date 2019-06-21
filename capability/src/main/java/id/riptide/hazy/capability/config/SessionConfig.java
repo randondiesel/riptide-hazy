@@ -12,9 +12,9 @@
  * the License.
  */
 
-package rd.riptide.hazy.capability.config;
+package id.riptide.hazy.capability.config;
 
-import rd.jsonmapper.JSON;
+import id.jsonmapper.JSON;
 
 /**
  * @author indroneel

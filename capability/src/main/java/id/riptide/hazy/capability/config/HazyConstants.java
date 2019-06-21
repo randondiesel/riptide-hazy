@@ -12,35 +12,16 @@
  * the License.
  */
 
-package rd.riptide.hazy.capability;
-
-import java.io.Serializable;
+package id.riptide.hazy.capability.config;
 
 /**
  * @author indroneel
  *
  */
+public interface HazyConstants {
 
-public class SessionData implements Serializable {
+	String MNAME_SESSIONS = "hazy-sessions";
+	String MNAME_SESSION_KEYS = "hazy-session-keys";
+	String MNAME_SESSION_VALUES = "hazy-session-values";
 
-	private static final long serialVersionUID = 401275066978002139L;
-
-	private long creationTime;
-	private long lastAccessTime;
-
-	public long getCreationTime() {
-		return creationTime;
-	}
-
-	public void setCreationTime(long time) {
-		creationTime = time;
-	}
-
-	public long getLastAccessTime() {
-		return lastAccessTime;
-	}
-
-	public void setLastAccessTime(long time) {
-		this.lastAccessTime = time;
-	}
 }

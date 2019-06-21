@@ -12,7 +12,7 @@
  * the License.
  */
 
-package rd.riptide.hazy.capability.config;
+package id.riptide.hazy.capability.config;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;
 import com.hazelcast.client.config.SocketOptions;
 
-import rd.jsonmapper.JSON;
+import id.jsonmapper.JSON;
 
 /**
  * @author indroneel
