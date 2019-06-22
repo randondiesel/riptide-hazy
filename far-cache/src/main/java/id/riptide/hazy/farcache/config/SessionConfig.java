@@ -12,9 +12,9 @@
  * the License.
  */
 
-package rd.riptide.hazy.farcache.config;
+package id.riptide.hazy.farcache.config;
 
-import rd.jsonmapper.JSON;
+import id.jsonmapper.JSON;
 
 /**
  * @author indroneel

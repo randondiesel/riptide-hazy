@@ -12,7 +12,7 @@
  * the License.
  */
 
-package rd.riptide.hazy.farcache;
+package id.riptide.hazy.farcache;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,8 +32,8 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
 import com.hazelcast.map.impl.MapListenerAdapter;
 
-import rd.jsonmapper.decode.Json2Object;
-import rd.riptide.hazy.farcache.config.HazyConfig;
+import id.jsonmapper.decode.Json2Object;
+import id.riptide.hazy.farcache.config.HazyConfig;
 
 /**
  * @author indroneel

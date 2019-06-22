@@ -12,7 +12,7 @@
  * the License.
  */
 
-package rd.riptide.hazy.farcache.config;
+package id.riptide.hazy.farcache.config;
 
 import java.util.logging.Logger;
 
@@ -24,7 +24,7 @@ import com.hazelcast.config.MultiMapConfig.ValueCollectionType;
 import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.map.impl.MapListenerAdapter;
 
-import rd.jsonmapper.JSON;
+import id.jsonmapper.JSON;
 
 /**
  * @author indroneel

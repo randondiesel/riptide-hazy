@@ -19,24 +19,11 @@
 
 	<if condition='isDefined("devmode")'>
 		<then>
-			<include file="deploy/config/logback.xml"/>
+			<include file="extern/config/logback.xml"/>
 		</then>
 		<else>
 			<include file="config/logback.xml"/>
 		</else>
 	</if>
 
-	<!--
-	<logger name="rd.riptide.hazy" level="TRACE" additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger>
-	-->
-
-	<!-- logger name="rd" level="TRACE" additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger>
-
-	<logger name="test" level="DEBUG" additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger -->
 </configuration>

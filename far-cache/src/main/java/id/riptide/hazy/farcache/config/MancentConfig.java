@@ -12,12 +12,12 @@
  * the License.
  */
 
-package rd.riptide.hazy.farcache.config;
+package id.riptide.hazy.farcache.config;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.ManagementCenterConfig;
 
-import rd.jsonmapper.JSON;
+import id.jsonmapper.JSON;
 
 /**
  * @author indroneel

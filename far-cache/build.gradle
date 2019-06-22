@@ -11,10 +11,10 @@ repositories {
 	mavenLocal()
 	mavenCentral()
 	maven {
-		url "http://repo.randondiesel.com/view/snapshots"
+		url "http://maven.indr.me/view/snapshots"
 	}
 	maven {
-		url "http://repo.randondiesel.com/view/releases"
+		url "http://maven.indr.me/view/releases"
 	}
 }
 
@@ -23,7 +23,7 @@ dependencies {
 	implementation "ch.qos.logback:logback-core:1.1.8"
 	implementation "ch.qos.logback:logback-classic:1.1.8"
 	implementation "org.codehaus.janino:janino:3.0.6"
-	implementation "rd.jsonmapper:rd.jsonmapper:0.2-SNAPSHOT"
+	implementation "id.jsonmapper:id.jsonmapper:0.2-SNAPSHOT"
 	implementation "com.hazelcast:hazelcast:3.11"
 }
 
@@ -38,7 +38,7 @@ task deploy {
 			into "$deployDir/lib"
 		}
 		copy {
-			from "deploy" into "$deployDir"
+			from "extern" into "$deployDir"
 		}
 		exec {
 			workingDir "$deployDir"
@@ -49,11 +49,11 @@ task deploy {
 }
 
 task execute(type:JavaExec) {
-	main = "rd.riptide.hazy.farcache.Main"
+	main = "id.riptide.hazy.farcache.Main"
 	classpath = sourceSets.main.runtimeClasspath
 	maxHeapSize = "512M"
 	minHeapSize = "32M"
-	args = ["./deploy/config/far-cache.json"]
+	args = ["./extern/config/far-cache.json"]
 	systemProperties["devmode"] = "true"
 	//systemProperties["io.netty.allocator.numHeapArenas"] = "50"
 	//systemProperties["io.netty.noPreferDirect"] = "true"
